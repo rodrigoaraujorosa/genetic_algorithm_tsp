@@ -7,6 +7,8 @@ from draw_functions import draw_paths, draw_plot, draw_cities
 import sys
 import numpy as np
 from benchmark_att48 import *
+import json
+import os
 
 
 # Define constant values
@@ -92,14 +94,40 @@ best_fitness_generation = 0
 best_fitness_time = "00:00:00"
 best_fitness_took = "00:00"
 
+# Arquivo para salvar o melhor resultado
+BEST_RESULT_FILE = "best_solution.json"
+
+# Carregar melhor resultado anterior (se existir)
+global_best_fitness = float('inf')
+if os.path.exists(BEST_RESULT_FILE):
+    try:
+        with open(BEST_RESULT_FILE, 'r') as f:
+            saved_data = json.load(f)
+            global_best_fitness = saved_data.get('fitness', float('inf'))
+            print(f"Loaded previous best: {global_best_fitness}")
+    except Exception as e:
+        print(f"Could not load previous best: {e}")
+
+
+def save_screenshot(screen):
+    """Captura e salva a tela do pygame."""
+    os.makedirs("screenshots", exist_ok=True)
+    timestamp = pygame.time.get_ticks()
+    screenshot_filename = f"screenshots/screenshot_{timestamp}.png"
+    pygame.image.save(screen, screenshot_filename)
+    print(f"Screenshot saved: {screenshot_filename}")
+
+
 # Main game loop
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            save_screenshot(screen)
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_q:
+                save_screenshot(screen)
                 running = False
 
     elapsed_time = (pygame.time.get_ticks() - start_time) / 1000  # Time in seconds
@@ -158,6 +186,23 @@ while running:
             f"Time: {best_hours:02d}:{best_minutes:02d}:{best_seconds:02d}; "
             f"Discovery Time: {took_minutes:02d}:{took_seconds:02d}"
         )
+        
+        # Salvar se for melhor que o recorde global
+        if best_fitness < global_best_fitness:
+            global_best_fitness = best_fitness
+            try:
+                result_data = {
+                    'fitness': float(best_fitness),
+                    'generation': generation,
+                    'time': best_fitness_time,
+                    'took': best_fitness_took,
+                    'solution': [(float(x), float(y)) for x, y in best_solution]
+                }
+                with open(BEST_RESULT_FILE, 'w') as f:
+                    json.dump(result_data, f, indent=2)
+                print(f"★ NEW RECORD SAVED: {round(best_fitness, 2)} ★")
+            except Exception as e:
+                print(f"Error saving best solution: {e}")
     
     # Calcular tempo desde última melhoria (reseta a cada melhoria)
     time_since_improvement = (pygame.time.get_ticks() - last_improvement_time) / 1000
@@ -226,8 +271,6 @@ while running:
     pygame.display.flip()
     clock.tick(FPS)
 
-
-# TODO: save the best individual in a file if it is better than the one saved.
 
 # exit software
 pygame.quit()
