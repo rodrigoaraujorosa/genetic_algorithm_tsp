@@ -142,7 +142,7 @@ while running:
     screen.fill(WHITE)
 
     # Desenhar título centralizado no topo
-    title_text = title_font.render("Código Original: Cruzamento e Mutação sem alteração; Probabilidade de Mutação = 0.5; Inicialização: sem heurística", True, BLACK)
+    title_text = title_font.render("Mudança 1: Ajuste Cruzamento, substituição de child.insert() e Mutação sem alteração; Probabilidade de Mutação = 0.5; Inicialização: sem heurística", True, BLACK)
     title_rect = title_text.get_rect(center=(WIDTH // 2, HEADER_HEIGHT // 2))
     screen.blit(title_text, title_rect)
 
