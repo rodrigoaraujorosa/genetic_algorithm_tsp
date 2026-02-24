@@ -142,21 +142,29 @@ def mutate(solution:  List[Tuple[float, float]], mutation_probability: float) ->
     Returns:
     List[int]: The mutated solution sequence.
     """
-    mutated_solution = copy.deepcopy(solution)
-
-    # Check if mutation should occur    
-    if random.random() < mutation_probability:
-        
-        # Ensure there are at least two cities to perform a swap
-        if len(solution) < 2:
-            return solution
+    # Check if mutation should occur
+    if random.random() >= mutation_probability:
+        return solution
     
-        # Select a random index (excluding the last index) for swapping
-        index = random.randint(0, len(solution) - 2)
-        
-        # Swap the cities at the selected index and the next index
-        mutated_solution[index], mutated_solution[index + 1] = solution[index + 1], solution[index]   
-        
+    # Ensure there are at least two cities to perform inversion
+    if len(solution) < 2:
+        return solution
+    
+    # Create a copy of the solution
+    mutated_solution = solution.copy()
+    
+    # Selecionar dois índices aleatórios para o segmento a ser invertido.
+    index1 = random.randint(0, len(solution) - 1)
+    index2 = random.randint(0, len(solution) - 1)
+    
+    # Garantir que index1 < index2
+    start_index = min(index1, index2)
+    end_index = max(index1, index2)
+    
+    # Inverte o segmento entre start_index e end_index (inclusive).
+    if start_index != end_index:
+        mutated_solution[start_index:end_index + 1] = reversed(mutated_solution[start_index:end_index + 1])
+    
     return mutated_solution
 
 ### Demonstration: mutation test code    
