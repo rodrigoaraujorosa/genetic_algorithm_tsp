@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 import random
 import itertools
-from genetic_algorithm import mutate, order_crossover, generate_random_population, calculate_fitness, sort_population, default_problems
+from genetic_algorithm import mutate, order_crossover, generate_random_population, calculate_fitness, sort_population, default_problems, generate_population_with_heuristics, nearest_neighbour
 from draw_functions import draw_paths, draw_plot, draw_cities
 import sys
 import numpy as np
@@ -81,8 +81,9 @@ generation_counter = itertools.count(start=1)  # Start the counter at 1
 start_time = pygame.time.get_ticks()
 
 # Create Initial Population
-# TODO:- use some heuristic like Nearest Neighbour our Convex Hull to initialize
-population = generate_random_population(cities_locations, POPULATION_SIZE)
+# population = generate_random_population(cities_locations, POPULATION_SIZE)
+# Utilizando abordagem híbrida: 50% baseada em heurística (Vizinho Mais Próximo), 50% aleatória para diversidade.
+population = generate_population_with_heuristics(cities_locations, POPULATION_SIZE, heuristic_ratio=0.5)
 best_fitness_values = []
 best_solutions = []
 
@@ -142,7 +143,7 @@ while running:
     screen.fill(WHITE)
 
     # Desenhar título centralizado no topo
-    title_text = title_font.render("Mudança 2: Ajuste Cruzamento, substituição de child.insert() e Mutação Invertida; Probabilidade de Mutação = 0.5; Inicialização: sem heurística", True, BLACK)
+    title_text = title_font.render("Mudança 3: Ajuste Cruzamento, substituição de child.insert() e Mutação Invertida; Probabilidade de Mutação = 0.5; Inicialização: Nearest Neighbour", True, BLACK)
     title_rect = title_text.get_rect(center=(WIDTH // 2, HEADER_HEIGHT // 2))
     screen.blit(title_text, title_rect)
 

@@ -250,5 +250,73 @@ if __name__ == '__main__':
         print('generation: ', generation)
         population = new_population
     
+def generate_population_with_heuristics(cities_location: List[Tuple[float, float]], 
+                                       population_size: int, 
+                                       heuristic_ratio: float = 0.2) -> List[List[Tuple[float, float]]]:
+    """
+    Gera uma população híbrida combinando soluções baseadas em heurísticas e soluções aleatórias.
+    
+    Esta abordagem melhora a qualidade da população inicial ao incluir algumas boas soluções vindas de heurísticas, 
+    enquanto mantém a diversidade com soluções aleatórias.
 
+    Parameters:
+    - cities_location (List[Tuple[float, float]]): Lista de coordenadas das cidades.
+    - population_size (int): Tamanho total da população.
+    - heuristic_ratio (float): Fração da população a ser gerada usando heurísticas (0.0 a 1.0).
+                               Default é 0.2 (20% heurística, 80% aleatória).
+
+    Returns:
+    List[List[Tuple[float, float]]]: Uma população híbrida de rotas.
+    """
+    population = []
+    
+    # Calcular quantas soluções devem usar heurísticas
+    n_heuristic = max(1, int(population_size * heuristic_ratio))
+    n_random = population_size - n_heuristic
+    
+    # Gerar soluções baseadas em heurísticas (Nearest Neighbour a partir de diferentes cidades iniciais)
+    for _ in range(n_heuristic):
+        # Usar diferentes cidades iniciais para obter variedade nas soluções heurísticas
+        tour = nearest_neighbour(cities_location)
+        population.append(tour)
+    
+    # Preencher o restante com soluções aleatórias para diversidade
+    population.extend(generate_random_population(cities_location, n_random))
+    
+    return population
+
+def nearest_neighbour(cities_location: List[Tuple[float, float]], start_city: Optional[Tuple[float, float]] = None) -> List[Tuple[float, float]]:
+    """
+    Gera uma rota utilizando a heurística do Vizinho Mais Próximo.
+    
+    Este algoritmo guloso começa a partir de uma cidade e sempre se move para a cidade não visitada mais próxima.
+    Embora não seja ótimo, geralmente produz boas soluções iniciais para o TSP.
+
+    Parameters:
+    - cities_location (List[Tuple[float, float]]): Lista de coordenadas das cidades.
+    - start_city (Optional[Tuple[float, float]]): Cidade inicial. Se None, escolhe aleatoriamente.
+
+    Returns:
+    List[Tuple[float, float]]: Uma rota gerada utilizando a heurística do Vizinho Mais Próximo.
+    """
+    if not cities_location:
+        return []
+    
+    # Escolher cidade inicial
+    if start_city is None:
+        current_city = random.choice(cities_location)
+    else:
+        current_city = start_city
+    
+    tour = [current_city]
+    unvisited = set(cities_location) - {current_city}
+    
+    # Construir rota sempre indo para a cidade não visitada mais próxima
+    while unvisited:
+        nearest_city = min(unvisited, key=lambda city: calculate_distance(current_city, city))
+        tour.append(nearest_city)
+        unvisited.remove(nearest_city)
+        current_city = nearest_city
+    
+    return tour
 
