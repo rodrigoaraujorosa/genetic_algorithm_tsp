@@ -141,13 +141,10 @@ while running:
 
     screen.fill(WHITE)
 
-    # Desenhar título alinhado à direita no topo
-    title_text = title_font.render("Cruzamento e Mutação com Código Original", True, BLACK)
-    title_rect = title_text.get_rect(midright=(WIDTH - 10, HEADER_HEIGHT // 2))
+    # Desenhar título centralizado no topo
+    title_text = title_font.render("Código Original: Cruzamento e Mutação sem alteração; Probabilidade de Mutação = 0.5; Inicialização: sem heurística", True, BLACK)
+    title_rect = title_text.get_rect(center=(WIDTH // 2, HEADER_HEIGHT // 2))
     screen.blit(title_text, title_rect)
-    
-    # Linha separadora abaixo do título
-    pygame.draw.line(screen, BLACK, (0, HEADER_HEIGHT), (WIDTH, HEADER_HEIGHT), 2)
 
     population_fitness = [calculate_fitness(
         individual) for individual in population]
@@ -217,11 +214,15 @@ while running:
     best_solutions.append(best_solution)
 
     draw_plot(screen, list(range(len(best_fitness_values))),
-              best_fitness_values, y_label="Fitness - Distance (pxls)")
+              best_fitness_values, y_label="Fitness - Distance (pxls)",
+              position=(0, HEADER_HEIGHT))
 
     draw_cities(screen, [(int(x), int(y)) for x, y in cities_locations], RED, NODE_RADIUS)
     draw_paths(screen, best_solution, BLUE, width=3)
     draw_paths(screen, population[1], rgb_color=(128, 128, 128), width=1)
+
+    # Linha separadora abaixo do título (desenhada por cima para ficar visível)
+    pygame.draw.line(screen, BLACK, (0, HEADER_HEIGHT), (WIDTH, HEADER_HEIGHT), 2)
 
     # Renderizar informações no rodapé em duas linhas
     footer_padding_bottom = 8

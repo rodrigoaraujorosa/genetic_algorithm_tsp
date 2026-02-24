@@ -15,7 +15,7 @@ from typing import List, Tuple
 matplotlib.use("Agg")
 
 
-def draw_plot(screen: pygame.Surface, x: list, y: list, x_label: str = 'Generation', y_label: str = 'Fitness') -> None:
+def draw_plot(screen: pygame.Surface, x: list, y: list, x_label: str = 'Generation', y_label: str = 'Fitness', position: tuple = (0, 0)) -> None:
     """
     Draw a plot on a Pygame screen using Matplotlib.
 
@@ -25,6 +25,7 @@ def draw_plot(screen: pygame.Surface, x: list, y: list, x_label: str = 'Generati
     - y (list): The y-axis values.
     - x_label (str): Label for the x-axis (default is 'Generation').
     - y_label (str): Label for the y-axis (default is 'Fitness').
+    - position (tuple): Position (x, y) to draw the plot (default is (0, 0)).
     """
     fig, ax = plt.subplots(figsize=(4, 4), dpi=100)
     ax.plot(x, y)
@@ -39,7 +40,7 @@ def draw_plot(screen: pygame.Surface, x: list, y: list, x_label: str = 'Generati
 
     size = canvas.get_width_height()
     surf = pygame.image.fromstring(raw_data, size, "RGB")
-    screen.blit(surf, (0, 0))
+    screen.blit(surf, position)
     
     plt.close(fig)  # Liberar memória da figura
     
