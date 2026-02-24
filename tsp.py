@@ -142,7 +142,7 @@ while running:
     screen.fill(WHITE)
 
     # Desenhar título centralizado no topo
-    title_text = title_font.render("Mudança 1: Ajuste Cruzamento, substituição de child.insert() e Mutação sem alteração; Probabilidade de Mutação = 0.5; Inicialização: sem heurística", True, BLACK)
+    title_text = title_font.render("Mudança 2: Ajuste Cruzamento, substituição de child.insert() e Mutação Invertida; Probabilidade de Mutação = 0.5; Inicialização: sem heurística", True, BLACK)
     title_rect = title_text.get_rect(center=(WIDTH // 2, HEADER_HEIGHT // 2))
     screen.blit(title_text, title_rect)
 
@@ -260,8 +260,8 @@ while running:
         probability = 1 / np.array(population_fitness)
         parent1, parent2 = random.choices(population, weights=probability, k=2)
 
-        # child1 = order_crossover(parent1, parent2)
-        child1 = order_crossover(parent1, parent1)
+        child1 = order_crossover(parent1, parent2)
+        # child1 = order_crossover(parent1, parent1)
 
         child1 = mutate(child1, MUTATION_PROBABILITY)
 
