@@ -41,6 +41,8 @@ def draw_plot(screen: pygame.Surface, x: list, y: list, x_label: str = 'Generati
     surf = pygame.image.fromstring(raw_data, size, "RGB")
     screen.blit(surf, (0, 0))
     
+    plt.close(fig)  # Liberar memória da figura
+    
 def draw_cities(screen: pygame.Surface, cities_locations: List[Tuple[int, int]], rgb_color: Tuple[int, int, int], node_radius: int) -> None:
     """
     Draws circles representing cities on the given Pygame screen.
